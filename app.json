@@ -1,6 +1,16 @@
 {
   "expo": {
     "name": "myPlant",
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow myPlants to access your camera",
+          "microphonePermission": "Allow myPlants to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ],
     "slug": "myPlant",
     "version": "1.0.0",
     "orientation": "portrait",

@@ -6,13 +6,24 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "tunnel": "expo start --lan"
   },
   "dependencies": {
-    "expo": "~52.0.18",
+    "@react-native-async-storage/async-storage": "^2.1.0",
+    "@react-native-clipboard/clipboard": "^1.15.0",
+    "@react-native-community/slider": "^4.5.5",
+    "@react-navigation/bottom-tabs": "^7.2.0",
+    "@react-navigation/native": "^7.0.14",
+    "@react-navigation/stack": "^7.1.0",
+    "expo": "^52.0.19",
+    "expo-camera": "^16.0.10",
+    "expo-media-library": "^17.0.3",
     "expo-status-bar": "~2.0.0",
     "react": "18.3.1",
-    "react-native": "0.76.5"
+    "react-native": "0.76.5",
+    "react-native-vector-icons": "^10.2.0",
+    "react-native-vision-camera": "^4.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
