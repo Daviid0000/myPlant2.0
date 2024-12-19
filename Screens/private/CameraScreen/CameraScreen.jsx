@@ -1,11 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {useState, useRef, useEffect} from 'react';
 import { StyleSheet, Text, View, Image, Alert, TouchableOpacity } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import Slider from '@react-native-community/slider';
 import Button from '../../../components/Buttons'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   
@@ -23,7 +21,6 @@ export default function App() {
 
     const cameraRef = useRef(null);
 
-    //to load the last saved image when permissions change
     useEffect(() => {
         if(cameraPermission && cameraPermission.granted && mediaLibraryPermissionResponse && mediaLibraryPermissionResponse.status === 'granted') {
             getLastSavedImage();
@@ -31,12 +28,10 @@ export default function App() {
     }, [cameraPermission, mediaLibraryPermissionResponse])
 
     if (!cameraPermission || !mediaLibraryPermissionResponse) {
-        // Permissions are still loading.
         return <View />
     }
   
     if (!cameraPermission.granted || mediaLibraryPermissionResponse.status !== 'granted') {
-        // Permissions are not granted yet.
         return (
           <View style={styles.container}>
               <Text>We need camera and gallery permissions to continue.</Text>
@@ -50,7 +45,6 @@ export default function App() {
         )
     }
   
-    //function to toggle camera properties
     const toggleProperty = (prop, option1, option2) => {
         setCameraProps((current) => ({
             ...current,
@@ -58,7 +52,6 @@ export default function App() {
         }));
     };
 
-    //function to zoom in
     const zoomIn = () => {
         setCameraProps((current) => ({
             ...current,
@@ -66,7 +59,6 @@ export default function App() {
         }))
     }
 
-    //function to zoom out
     const zoomOut = () => {
       setCameraProps((current) => ({
           ...current,
@@ -74,7 +66,6 @@ export default function App() {
       }))
   }
 
-  //function to take a picture and show it without saving it
   const takePicture = async() => {
       if(cameraRef.current) {
           try {
@@ -88,7 +79,6 @@ export default function App() {
       }
   }
 
-  //function to save the picture using MediaLibrary
   const savePicture = async() => {
       if(image) {
           try {
@@ -104,7 +94,6 @@ export default function App() {
       }
   }
 
-  //function to get the last saved image from the 'DCIM' album created in the gallery by expo
   const getLastSavedImage = async() => {
       if(mediaLibraryPermissionResponse && mediaLibraryPermissionResponse.status === 'granted') {
           const dcimAlbum = await MediaLibrary.getAlbumAsync('DCIM');
@@ -131,13 +120,12 @@ export default function App() {
   }
 
   const sendImageToServer = async (base64Image) => {
-    // console.log(base64Image)
     try {
-        const response = await fetch('https://mushroom.kindwise.com/api/v1/identification', { // Reemplaza con tu URL del servidor
+        const response = await fetch('https://plant.id/api/v3/identification', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Api-Key': 'apy-key'
+                'Api-Key': `${process.env.EXPO_PUBLIC_PLANTID_API_KEY}`
             },
             body: JSON.stringify({
                 images: base64Image,
@@ -154,11 +142,10 @@ export default function App() {
         }
 
         const result = await response.json();
-        console.log('Server response:', result);
         console.log('suggestions:', JSON.stringify(result.result.classification.suggestions, null, 2));
-        const id = result.result.classification.suggestions[0].id
-        console.log(id);
-        detailsPlant(id);
+        console.log('plant name:', result.result.classification.suggestions[0].name);
+        const getPlantName = result.result.classification.suggestions[0].name
+        recipePlant(getPlantName);
         Alert.alert('Success', 'Image uploaded successfully!');
         
     } catch (error) {
@@ -167,23 +154,32 @@ export default function App() {
     }
 };
 
-const detailsPlant = async (plantID) => {
+const recipePlant = async (plantName) => {
+    console.log('ejeecutando ando...');
   try {
-    const response = await fetch(`https://plant.id/api/v3/kb/plants/${plantID}?details=common_names%2Curl%2Cdescription%2Ctaxonomy%2Crank%2Cgbif_id%2Cinaturalist_id%2Cimage%2Csynonyms%2Cedible_parts%2Cwatering%2Cpropagation_methods&language=en`, {
-      method: 'GET',
+    const response = await fetch(`https://api.cohere.ai/generate`, {
+      method: 'POST',
       headers: {
+          'Authorization': `Bearer ${process.env.EXPO_PUBLIC_COHERE_API_KEY}`,
           'Content-Type': 'application/json',
-          'Api-Key': 'B6zKFvNl0mFHj65t8KuAkEqQW9bS9CknurXjuLnHCRTS8DSOmk'
-      }
+          'Cohere-Version': '2022-12-06'
+      },
+      body: JSON.stringify(
+          {
+              model: "command-xlarge-nightly",
+              prompt: `Listame la siguiente información precisa acerca de la planta: ${plantName}. ¿Comestible? En caso de que sea comestible, contestame únicamente 'Comestible' o 'No comestible' y tampoco responder nada parecido a ¡Claro! Aquí tines una receta sencilla...... brinda una receta paso a paso para preparar con la planta: ${plantName}, solo brinda la receta, ni más ni menos. Sin terminar diciendo algo parecido a ¿Quieres otra receta? ¿Deseas otra receta? Tampoco dar una advertencia al final de la receta.  '¿No comestible? En caso de que no sea comestible únicamente no respondas a nada parecido a ¡Claro! aquí tienes información sencilla...... y brinda una información breve y precisa de la planta: ${plantName}, solo brinda una información del por qué no es comestible y añade un listado de posibles causas de intoxicación en caso de  que pudiese darse el caso que sea una planta tóxica, ni más ni menos. Sin terminar diciendo algo parecido a ¿Quieres otra información? ¿Deseas otra información?.`,
+              max_tokens: 250,
+              temperature: 0.8
+            }
+      )
   });
-  console.log(response)
 
   if(!response.ok) {
     throw new Error(`HTTP status ${response.status}`);
   }
 
-  const result = response.json();
-  console.log("DETALLES DE LA PLANTA: ", result)
+  const result = await response.json();
+  console.log("Receta: ", result.generations[0].text)
   } catch (error) {
     console.error('Error uploading image:', error);
         Alert.alert('Error', 'Failed to get details.');
