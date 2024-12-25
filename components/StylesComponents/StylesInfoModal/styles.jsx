@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         left: 250,
-        position: 'absolute'
+        position: 'absolute',
     },
     noRecipeTitle: {
         color: '#f00',
