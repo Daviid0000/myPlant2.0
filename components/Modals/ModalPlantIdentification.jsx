@@ -90,7 +90,7 @@ export const ModalPlantIdentification = ({ modalData, setModalData }) => {
                 visible={!!modalData}
             >
                 <View style={styles.modal}>
-                    <View style={{left: -150, top: 10, zIndex: 1}}>
+                    <View style={{left: -150, top: 10, zIndex: 1, backgroundColor: '#33333380', borderRadius: 50, width: 30, height: 30, alignItems: 'center', justifyContent: 'center' }}>
                         <Buttons icon={'close'} size={25} disabled={true} onPress={() => setModalData(null)} />
                     </View>
 

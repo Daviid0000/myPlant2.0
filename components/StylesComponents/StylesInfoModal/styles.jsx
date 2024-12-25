@@ -33,7 +33,8 @@ export const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 10,
         justifyContent: 'center',
-        marginBottom: 50
+        marginBottom: 50,
+        marginTop: 10
     },
     textButton: {
         color: '#fff',
@@ -56,7 +57,8 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 20,
-        left: 70
+        left: 250,
+        position: 'absolute'
     },
     noRecipeTitle: {
         color: '#f00',

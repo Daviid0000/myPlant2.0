@@ -59,6 +59,7 @@ export default function CameraScreen() {
         navigation.navigate('Gallery');
         await saveImageToLibrary(picture.uri); // Guarda la imagen en la galería
         await IdentificationPlant(picture.base64, navigation, setModalData);
+        
       } catch (err) {
         console.error('Error while taking the picture:', err);
       }

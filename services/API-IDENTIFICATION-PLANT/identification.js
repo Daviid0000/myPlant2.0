@@ -1,4 +1,4 @@
-import { Alert, Text } from "react-native";
+import { Alert } from "react-native";
 import { recipePlant } from "../API-INFO-PLANT/recipePlant";
 
 export const IdentificationPlant = async (base64Image, navigation, setModalData) => {
@@ -31,10 +31,7 @@ export const IdentificationPlant = async (base64Image, navigation, setModalData)
         const plantImage = result.result.classification.suggestions[0].similar_images[0].url;
         const plantImageSmall = result.result.classification.suggestions[0].similar_images[0].url_small;
         const getRecipePlant = await recipePlant(getPlantName);
-        console.log("rresultado:", getRecipePlant);
         
-        Alert.alert('¡Completado!', '¡Planta identificada!');
-
         setModalData({
             name: getPlantName,
             image: plantImage,
