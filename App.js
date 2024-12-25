@@ -9,6 +9,7 @@ import { ChatScreen } from './Screens/private/ChatScreen/ChatScreen';
 import { LoginScreen } from './Screens/public/LoginScreen';
 import { GaleryScreen } from './Screens/private/GaleryScreen/GaleryScreen';
 import CameraScreenView from './Screens/private/CameraScreen/CameraScreen';
+import { PlantInfoProvider } from './context/PlantInfoContext';
 console.log('CameraScreen imported:', CameraScreenView);
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -111,7 +112,9 @@ const Routes = () => {
 export default function App() {
   return (
     <>
-      <Routes />
+      <PlantInfoProvider>
+        <Routes />
+      </PlantInfoProvider>
     </>
   );
 }
