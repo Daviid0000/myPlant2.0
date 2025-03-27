@@ -119,3 +119,48 @@ export const deleteUser = async (req, res) => {
         return res.status(500).json({ message: "Error en el servidor", error})
     }
 }
+
+export const userLogin = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        console.log("user:", username);
+        console.log("pass:", password);
+        
+
+        if(!username || !password) {
+            throw new Error({
+                statusCode: 400,
+                message: "Datos faltantes"
+            });
+        }
+
+        console.log("hasta aquí llegué");
+        
+        const thisUser = await User.findOne({ where: { username } });
+
+        console.log("Usuario: ", thisUser);
+        
+        const userEmail = thisUser.email;
+
+        console.log("Email del usuario logeado: ", userEmail);
+
+        const authPass = bcrypt.compareSync(password, thisUser.password);
+
+        console.log("contraseña: ", authPass);
+        
+    
+        if(!authPass) {
+            throw new Error({
+                statusCode: 400,
+                message: "Invalid password"
+            });
+        }
+
+        const token = jwt.sign({username, userEmail}, environments.secret_key, {expiresIn: "1h"})
+        
+        return res.json({ message: "Logueado correctamente", token})
+    } catch (error) {
+        return res.status(500).json({ message: "Error en el servidor", error })
+    }
+}

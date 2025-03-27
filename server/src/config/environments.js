@@ -1,3 +1,3 @@
 export const environments = {
-    secret_key: ññññññ
+    secret_key: "ññññññ"
 }

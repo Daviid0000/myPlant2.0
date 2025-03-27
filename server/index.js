@@ -14,14 +14,14 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use('/publication', publicationRouter);
-app.use('/user', userRoutes)
+app.use('/user', userRoutes);
 
 io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
 
     socket.on("disconnect", (reason) => {
         console.log(`User disconnected: ${socket.id}. Reason: ${reason}`);
-    })
+    });
 
     socket.on("title", (title) => {
         console.log("Titulo de receta: ", title);

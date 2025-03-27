@@ -17,9 +17,10 @@ export const createPublication = async (req, res) => {
             );
         }
 
-        const user = await User.findOne({ where: email})
+        const user = await User.findOne({ where: {email}})
 
-        const createdPublication = await Publications.create({ 
+        const createdPublication = await Publications.create({
+            user,
             title,
             description,
             publicationType
