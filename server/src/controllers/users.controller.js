@@ -1,12 +1,23 @@
 import { User } from "../models/user.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { environments } from "../config/environments.js";
 
 export const createUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
+        
         const userCreated = await User.create({
             username, email, password
         })
+
+        const token = jwt.sign({username, email}, environments.secret_key, { expiresIn: "1h" })
+
+        const hashPass = await bcrypt.genSalt(10);
+        userCreated.password = await bcrypt.hash(password, hashPass);
+
+        const newUserCreated = await userCreated.save();
 
         if(!userCreated) {
             throw new Error(
@@ -14,9 +25,9 @@ export const createUser = async (req, res) => {
             )
         }
 
-        res.status(201).json({ message: "Usuario creado exitosamente" })
+        return res.status(201).json({ message: "Usuario creado exitosamente", newUserCreated, token })
     } catch (error) {
-        res.status(500).json({ message: "Error en el servidor" })
+        return res.status(500).json({ message: "Error en el servidor" })
     }
 }
 
@@ -30,9 +41,9 @@ export const getUsers = async (req, res) => {
             )
         }
 
-        res.json({ message: "Usuarios encontrados", users })
+        return res.json({ message: "Usuarios encontrados", users })
     } catch (error) {
-        res.status(500).json({ message: "Error en el servidor" })
+        return res.status(500).json({ message: "Error en el servidor" })
     }
 }
 
@@ -48,9 +59,9 @@ export const getOneUser = async (req, res) => {
             )
         }
 
-        res.json({ message: "Usuario encontrado", user})
+        return res.json({ message: "Usuario encontrado", user})
     } catch (error) {
-        res.status(500).json({ message: "Error en el servidor", error})
+        return res.status(500).json({ message: "Error en el servidor", error})
     }
 }
 
@@ -77,9 +88,9 @@ export const updateUser = async (req, res) => {
             )
         }
 
-        res.json({ message: "Usuario actualizado exitosamente" })
+        return res.json({ message: "Usuario actualizado exitosamente" })
     } catch (error) {
-        res.statu(500).json({ message: "Error en el servidor", error })
+        return res.statu(500).json({ message: "Error en el servidor", error })
     }
 }
 
@@ -103,8 +114,8 @@ export const deleteUser = async (req, res) => {
             )
         }
 
-        res.json({ message: "Usuario eliminado exitosamente" })
+        return res.json({ message: "Usuario eliminado exitosamente" })
     } catch (error) {
-        res.status(500).json({ message: "Error en el servidor", error})
+        return res.status(500).json({ message: "Error en el servidor", error})
     }
 }

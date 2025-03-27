@@ -1,25 +1,40 @@
 import { Publications } from "../models/publication.js";
+import { User } from "../models/user.js";
 
 export const createPublication = async (req, res) => {
     try {
         const { title, description, publicationType } = req.body;
 
+        if(!title) {
+            throw new Error(
+                res.status(404).json({ message: "¡Title required!" })
+            );
+        }
+
+        if(!description) {
+            throw new Error(
+                res.status(404).json({ message: "¡Description required"})
+            );
+        }
+
+        const user = await User.findOne({ where: email})
+
         const createdPublication = await Publications.create({ 
             title,
             description,
             publicationType
-        })
+        });
 
         if(!createdPublication) {
             throw new Error(
                 res.json({message:'Error al crear la publicación: ', createdPublication})
-            )
+            );
         }
 
-        res.status(201).json({ message: "Publicación creada exitosamente" });
+        return res.status(201).json({ message: "Publicación creada exitosamente" });
     } catch (error) {
         console.error('Error al crear la publicación:', error);
-        res.status(500).json({ message: 'Error en el servidor', error });
+        return res.status(500).json({ message: 'Error en el servidor', error });
     }
 }
 
@@ -33,9 +48,9 @@ export const getPublications = async (req, res) => {
             );
         }
 
-        res.json({ message: "Publicaciones obtenidas", publications});
+        return res.json({ message: "Publicaciones obtenidas", publications});
     } catch (error) {
-        res.json({ message: "Error en el servidor" });
+        return res.json({ message: "Error en el servidor" });
     }
 }
 
@@ -50,9 +65,9 @@ export const getOnePublication = async (req, res) => {
             );
         }
 
-        res.json({ message: "Publicación encontrada", publication });
+        return res.json({ message: "Publicación encontrada", publication });
     } catch (error) {
-        res.json({ message: "Error en el servidor" });
+        return res.json({ message: "Error en el servidor" });
     }
 }
 
@@ -78,9 +93,9 @@ export const updatePublication = async (req, res) => {
             });
         }
 
-        res.json({ message: "Publicación actualizada exitosamente", updatedPublication});
+        return res.json({ message: "Publicación actualizada exitosamente", updatedPublication});
     } catch (error) {
-        res.json({ message: "Error en el servidor" });
+        return res.json({ message: "Error en el servidor" });
     }
 }
 
@@ -103,8 +118,8 @@ export const deletePublication = async (req, res) => {
             });
         }
 
-        res.json({ message: "Publicación eliminada", deletedPublication});
+        return res.json({ message: "Publicación eliminada", deletedPublication});
     } catch (error) {
-        res.json({ message: "Error en el servidor" });
+        return res.json({ message: "Error en el servidor" });
     }
 }
