@@ -6,7 +6,6 @@ import { environments } from "../config/environments.js";
 export const createUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
-
         
         const userCreated = await User.create({
             username, email, password
