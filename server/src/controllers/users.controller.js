@@ -134,21 +134,12 @@ export const userLogin = async (req, res) => {
             });
         }
 
-        console.log("hasta aquí llegué");
-        
         const thisUser = await User.findOne({ where: { username } });
 
-        console.log("Usuario: ", thisUser);
-        
         const userEmail = thisUser.email;
-
-        console.log("Email del usuario logeado: ", userEmail);
 
         const authPass = bcrypt.compareSync(password, thisUser.password);
 
-        console.log("contraseña: ", authPass);
-        
-    
         if(!authPass) {
             throw new Error({
                 statusCode: 400,

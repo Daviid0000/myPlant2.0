@@ -3,7 +3,7 @@ import { User } from "../models/user.js";
 
 export const createPublication = async (req, res) => {
     try {
-        const { title, description, publicationType } = req.body;
+        const { email, title, description, publicationType } = req.body;
 
         if(!title) {
             throw new Error(
@@ -17,10 +17,11 @@ export const createPublication = async (req, res) => {
             );
         }
 
-        const user = await User.findOne({ where: {email}})
-
+        const userEmail = await User.findOne({ where: { email }})
+        const username = userEmail.username;
+        
         const createdPublication = await Publications.create({
-            user,
+            owner: username,
             title,
             description,
             publicationType
@@ -28,7 +29,7 @@ export const createPublication = async (req, res) => {
 
         if(!createdPublication) {
             throw new Error(
-                res.json({message:'Error al crear la publicación: ', createdPublication})
+                res.json({message:'No se logró crear la publicación: ', createdPublication})
             );
         }
 
