@@ -1,140 +1,6 @@
-// import { useState, useEffect } from "react";
-// import { Modal, Pressable, StyleSheet, Text, TextInput } from "react-native";
-// import { Button, View } from "react-native";
-// import { io } from 'socket.io-client';
-// import { MaterialIcons, Ionicons } from 'react-native-vector-icons'
-
-// let socket;
-
-// export const HomeScreen = () => {
-//     const [title, setTitle] = useState('');
-//     const [recipe, setRecipe] = useState('');
-//     const [MCreateRecipe, setMCreateRecipe] = useState(false);
-//     const [MViewRecipe, setMViewRecipe] = useState(false);
-//     const [selectedRecipe, setSelectedRecipe] = useState(null);
-
-//     useEffect(() => {
-//         socket = io("http://192.168.83.247:3000", {
-//             transports: ['websocket'], 
-//         });
-
-//         return () => {
-//             if (socket) {
-//                 socket.disconnect();
-//                 console.log('Socket desconectado');
-//             }
-//         };
-//     }, []);
-
-//     const handleRecipe = () => {
-        
-//         if (title && recipe) {
-//             console.log("Uy encontré una receta, mirá: ", title, recipe);
-//             socket.emit("title", title);
-//             socket.emit("recipe", recipe);
-
-//             setTitle('');
-//             setRecipe('');
-//         } else {
-//             console.log("Ow, no encontré ni una receta");
-//         }
-//     };
-
-//     const handlePressRecipe = (recipe) => {
-//         setSelectedRecipe(recipe); // Guardamos la receta seleccionada
-//         setMViewRecipe(true); // Mostramos el modal
-//     };
-
-//     const recipes = [
-//         {
-//             userId: 1, username: "David", stars: 180, plantName: "Menta", plantImage: null
-//         },
-//         {
-//             userId: 2, username: "Facundo", stars: 200, plantName: "Perejil", plantImage: null
-//         },
-//         {
-//             userId: 3, username: "Álvaro", stars: 190, plantName: "Burrito", plantImage: null
-//         }
-//     ]
-
-//     return (
-//         <>
-//             <View style={{ margin: 'auto' }}>
-//                 <View style={{flexDirection: 'row', top: -215}}>
-//                     <Ionicons name="person" size={25} color={'#36f'} style={styles.account} />
-//                     <Ionicons name="settings-outline" size={25} color={'#36f'} style={styles.settings} />
-//                 </View>
-
-
-//                 <View style={{top: -170}}>
-//                     {recipes.map((recipe) => (
-//                         <Pressable key={recipe.userId} style={styles.publication} onPress={() => handlePressRecipe(recipe)}>
-//                             <View style={styles.CProfile}></View>
-//                             <View style={styles.subCProfile}>
-//                                 <Text style={styles.username}>{recipe.username}</Text>
-//                                 <View style={styles.otherCProfile}>
-//                                     <MaterialIcons name='star' size={22} color={'#ff0'} />
-//                                     <Text style={{color: '#fff'}}>{recipe.stars}</Text>
-//                                 </View>
-//                             </View>
-//                             <View style={styles.CPlant}>
-//                                 <Text style={styles.plantName}>{recipe.plantName}</Text>
-//                                 <View style={styles.imgPlant}></View>
-//                             </View>
-
-//                             <Modal animationType="slide" transparent visible={MViewRecipe}>
-//                                 <View style={{backgroundColor: '#36f', borderRadius: 10, padding: 10, height: '80%', top: 160}}>
-//                                     <MaterialIcons name="close" size={30} color={'#fff'} onPress={() => setMViewRecipe(false)} style={{left: 300}} />
-
-//                                     <Text style={{color: '#fff'}}>Modal view recipe: {recipe.username} </Text>
-//                                 </View>
-//                             </Modal>
-//                         </Pressable>))}
-//                 </View>
-
-//                 <Modal animationType="fade" transparent visible={MCreateRecipe}>
-//                     <View style={styles.modalStyle}>
-                        
-//                         <View style={{flexDirection: 'row'}}>
-//                             <MaterialIcons name="info" size={22} color={'#fff'} onPress={() => console.log("Tu publicación podrá ser reportada por cualquier usuario, posteriormente será pasada a revisión y en caso de incumplir las reglas será eliminada y serás baneado por un tiempo.")} style={{left: 0}} />
-//                             <MaterialIcons name="close" size={22} color={'#fff'} onPress={() => setMCreateRecipe(false)} style={{left: 185}} />
-//                         </View>
-
-//                         <TextInput
-//                             placeholder="Titulo"
-//                             style={styles.inputStyle}
-//                             placeholderTextColor={'#fff'}
-//                             value={title}
-//                             onChangeText={(text) => setTitle(text)}
-//                         />
-
-//                         <TextInput
-//                             placeholder="Receta"
-//                             style={styles.inputStyle}
-//                             placeholderTextColor={'#fff'}
-//                             value={recipe}
-//                             onChangeText={(text) => setRecipe(text)}
-//                         />
-
-//                         <View style={{ margin: 10 }}>
-//                             <Button title="Send" onPress={handleRecipe} />
-//                         </View>
-//                     </View>
-//                 </Modal>
-
-                
-
-//                 <Pressable onPress={() => setMCreateRecipe(true)} style={styles.buttonSum}>
-//                     <Text style={styles.textSum}>+</Text>
-//                 </Pressable>
-//             </View>
-//         </>
-//     );
-// };
-
 import { useState, useEffect } from "react";
 import { Modal, Pressable, StyleSheet, Text, TextInput } from "react-native";
-import { Button, View } from "react-native";
+import { Button, View, Alert } from "react-native";
 import { io } from 'socket.io-client';
 import { MaterialIcons, Ionicons } from 'react-native-vector-icons';
 
@@ -142,10 +8,10 @@ let socket;
 
 export const HomeScreen = () => {
     const [title, setTitle] = useState('');
-    const [recipe, setRecipe] = useState('');
-    const [MCreateRecipe, setMCreateRecipe] = useState(false);
-    const [MViewRecipe, setMViewRecipe] = useState(false);
-    const [selectedRecipe, setSelectedRecipe] = useState(null); // Nuevo estado para la receta seleccionada
+    const [postDescription, setPostDescription] = useState('');
+    const [modalCreatePost, setModalCreatePost] = useState(false);
+    const [modalViewPost, setModalViewPost] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
 
     useEffect(() => {
         socket = io("http://192.168.83.247:3000", {
@@ -160,20 +26,49 @@ export const HomeScreen = () => {
         };
     }, []);
 
-    const handleRecipe = () => {
-        if (title && recipe) {
-            console.log("Uy encontré una receta, mirá: ", title, recipe);
-            socket.emit("title", title);
-            socket.emit("recipe", recipe);
+    const handlePost = async () => {
+        if(!title) {
+            console.error("El post requiere un título");
+        };
+        if(!postDescription) {
+            console.error("El post requiere una descripción");
+        };
+        
+        try {
+            const response = await fetch("http://ooo.ooo.ooo.000:3000/publicatio    ", {
+                method: "POST",
+                headers: {
+                    "Authorization" : `Bearer token`
+                },
+                body: JSON.stringify({
+                    email,
+                    title,
+                    description: postDescription,
+                    publicationType: "recipe"
+                })
+            })
 
+            if(!response.ok) {
+                throw new Error(`Error en la petición, estado: ${response.status}`)
+            }
+
+            const data = await response.json();
+            console.log("datos: ", data);
+            
             setTitle('');
-            setRecipe('');
-        } else {
-            console.log("Ow, no encontré ni una receta");
+            setPostDescription('');
+        } catch (error) {
+            Alert.alert("Error", "Error in request")
         }
+        // if (title && postDescription) {
+        //     console.log("Uy encontré una publicación, mirá: ", title, postDescription);
+            
+        // } else {
+        //     console.log("Ow, no encontré ni una publicación.  :(");
+        // }
     };
 
-    const recipes = [
+    const posts = [
         {
             userId: 1, username: "David", stars: 180, plantName: "Menta", plantImage: null
         },
@@ -185,9 +80,9 @@ export const HomeScreen = () => {
         }
     ];
 
-    const handlePressRecipe = (recipe) => {
-        setSelectedRecipe(recipe); // Guardamos la receta seleccionada
-        setMViewRecipe(true); // Mostramos el modal
+    const handlePressPost = (postDescription) => {
+        setSelectedPost(postDescription); // guardar post seleccionado
+        setModalViewPost(true); // mostrar el post en un modal
     };
 
     return (
@@ -199,48 +94,48 @@ export const HomeScreen = () => {
                 </View>
 
                 <View style={{ top: -170 }}>
-                    {recipes.map((recipe) => (
+                    {posts.map((postDescription) => (
                         <Pressable
-                            key={recipe.userId}
+                            key={postDescription.userId}
                             style={styles.publication}
-                            onPress={() => handlePressRecipe(recipe)}
+                            onPress={() => handlePressPost(postDescription)}
                         >
                             <View style={styles.CProfile}></View>
                             <View style={styles.subCProfile}>
-                                <Text style={styles.username}>{recipe.username}</Text>
+                                <Text style={styles.username}>{postDescription.username}</Text>
                                 <View style={styles.otherCProfile}>
                                     <MaterialIcons name="star" size={22} color={'#ff0'} />
-                                    <Text style={{ color: '#fff' }}>{recipe.stars}</Text>
+                                    <Text style={{ color: '#fff' }}>{postDescription.stars}</Text>
                                 </View>
                             </View>
                             <View style={styles.CPlant}>
-                                <Text style={styles.plantName}>{recipe.plantName}</Text>
+                                <Text style={styles.plantName}>{postDescription.plantName}</Text>
                                 <View style={styles.imgPlant}></View>
                             </View>
                         </Pressable>
                     ))}
                 </View>
 
-                <Modal animationType="slide" transparent visible={MViewRecipe}>
+                <Modal animationType="slide" transparent visible={modalViewPost}>
                     <View style={{ backgroundColor: '#36f', borderRadius: 10, padding: 10, height: '80%', top: 160 }}>
                         <MaterialIcons
                             name="close"
                             size={30}
                             color={'#fff'}
-                            onPress={() => setMViewRecipe(false)}
+                            onPress={() => setModalViewPost(false)}
                             style={{ left: 300 }}
                         />
-                        {selectedRecipe && (
+                        {selectedPost && (
                             <>
-                                <Text style={{ color: '#fff' }}>Username: {selectedRecipe.username}</Text>
-                                <Text style={{ color: '#fff' }}>Plant Name: {selectedRecipe.plantName}</Text>
-                                <Text style={{ color: '#fff' }}>Stars: {selectedRecipe.stars}</Text>
+                                <Text style={{ color: '#fff' }}>Username: {selectedPost.username}</Text>
+                                <Text style={{ color: '#fff' }}>Plant Name: {selectedPost.plantName}</Text>
+                                <Text style={{ color: '#fff' }}>Stars: {selectedPost.stars}</Text>
                             </>
                         )}
                     </View>
                 </Modal>
 
-                <Modal animationType="fade" transparent visible={MCreateRecipe}>
+                <Modal animationType="fade" transparent visible={modalCreatePost}>
                     <View style={styles.modalStyle}>
                         <View style={{ flexDirection: 'row' }}>
                             <MaterialIcons
@@ -258,7 +153,7 @@ export const HomeScreen = () => {
                                 name="close"
                                 size={22}
                                 color={'#fff'}
-                                onPress={() => setMCreateRecipe(false)}
+                                onPress={() => setModalCreatePost(false)}
                                 style={{ left: 185 }}
                             />
                         </View>
@@ -272,20 +167,20 @@ export const HomeScreen = () => {
                         />
 
                         <TextInput
-                            placeholder="Receta"
+                            placeholder="Descripción"
                             style={styles.inputStyle}
                             placeholderTextColor={'#fff'}
-                            value={recipe}
-                            onChangeText={(text) => setRecipe(text)}
+                            value={postDescription}
+                            onChangeText={(text) => setPostDescription(text)}
                         />
 
                         <View style={{ margin: 10 }}>
-                            <Button title="Send" onPress={handleRecipe} />
+                            <Button title="Send" onPress={handlePost} />
                         </View>
                     </View>
                 </Modal>
 
-                <Pressable onPress={() => setMCreateRecipe(true)} style={styles.buttonSum}>
+                <Pressable onPress={() => setModalCreatePost(true)} style={styles.buttonSum}>
                     <Text style={styles.textSum}>+</Text>
                 </Pressable>
             </View>

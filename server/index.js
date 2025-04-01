@@ -27,8 +27,8 @@ io.on("connection", (socket) => {
         console.log("Titulo de receta: ", title);
     });
 
-    socket.on("recipe", (recipe) => {
-        console.log("Receta en el servidor: ", recipe);
+    socket.on("postDescription", (postDescription) => {
+        console.log("Descripción en el servidor: ", postDescription);
     });
 });
 
