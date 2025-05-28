@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
       marginTop: 30,
     },
     topControlsContainer: {
-      height: 100,
+      height: 70,
       backgroundColor: 'black',
       flexDirection: 'row',
       justifyContent: 'space-around',

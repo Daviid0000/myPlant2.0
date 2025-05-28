@@ -101,17 +101,17 @@ export default function CameraScreen() {
       {!image ? (
         <>
           <View style={styles.topControlsContainer}>
-            <Button
+            {/* <Button
               icon={cameraProps.flash === 'on' ? 'flash-on' : 'flash-off'}
               onPress={() => toggleProperty('flash', 'on', 'off')}
               disabled={true}
-            />
-            <Button
+            /> 
+             <Button
               icon='animation'
               color={cameraProps.animateShutter ? 'white' : '#404040'}
               onPress={() => toggleProperty('animateShutter', true, false)}
               disabled={true}
-            />
+            /> */}
             <Button
               icon={cameraProps.enableTorch ? 'flashlight-on' : 'flashlight-off'}
               onPress={() => toggleProperty('enableTorch', true, false)}
@@ -129,12 +129,12 @@ export default function CameraScreen() {
             ref={cameraRef}
           />
 
-          <SliderControl
+          {/* <SliderControl
             zoom={cameraProps.zoom}
             setZoom={(value) =>
               setCameraProps((current) => ({ ...current, zoom: value }))
             }
-          />
+          /> */}
 
           <View style={styles.bottomControlsContainer}>
             <Button

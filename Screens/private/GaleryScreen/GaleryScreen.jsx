@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { ModalPlantIdentification } from "../../../components/Modals/ModalPlantIdentification";
 import { usePlantInfo } from "../../../context/PlantInfoContext";
-import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { ModalPlantPlaceholder } from "../../../components/Splash/ModalPlantSplash";
 
 export const GaleryScreen = () => {
     const { modalData, setModalData } = usePlantInfo();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (modalData) {
